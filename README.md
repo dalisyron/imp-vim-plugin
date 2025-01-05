@@ -68,15 +68,17 @@ If you prefer to install the plugin manually, follow the steps below:
 
    ```bash
    cp imp-vim-plugin/syntax/imp.vim ~/.vim/syntax/
+
    cp imp-vim-plugin/ftdetect/imp.vim ~/.vim/ftdetect/
    ```
 
 4. Restart Vim, and the highlighter will be active for `.imp` files.
 
 ## Demo
-![Screenshot 2025-01-04 at 8 49 30 PM](https://github.com/user-attachments/assets/c5e0cc72-a6dd-40c8-b5f9-9c4c1a602bd2)
+![Screenshot 2025-01-05 at 12 37 11 AM](https://github.com/user-attachments/assets/2327702f-767c-442c-98a2-ab369f908028)
 
 ## License
 
 This plugin is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
 

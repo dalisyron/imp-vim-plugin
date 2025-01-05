@@ -1,14 +1,11 @@
 "----------------------------------------------------------------------
 " imp.vim -- Syntax file for Ivy's "Imp" language with highlighting
-" 
+"
 " Maintainer:   Mobin Dariush
 " Last Updated: Jan 4, 2025
 "
-" This file defines syntax highlighting for .imp files that contain Ivy/Imp
-" code.
-"
 " Usage:
-"     Put this file into ~/.config/nvim/syntax/imp.vim 
+"     Put this file into ~/.config/nvim/syntax/imp.vim
 "     (or in $VIMRUNTIME/syntax/imp.vim if system-wide).
 "----------------------------------------------------------------------
 
@@ -18,65 +15,80 @@ endif
 
 " Reset any existing syntax in this buffer.
 syntax clear
-
-" Imp is case-sensitive for keywords (method, if, else, etc.).
 syntax case match
+syntax sync fromstart
 
 " -----------------------------------------------------------------------------
-" 1. COMMENTS
-"    Single-line comments: "// ... until EOL"
+" 1. IMP LINE REGION
+"    We define a region for each line, from ^ to $, which can contain
+"    tokens (numbers, keywords, operators) as well as a comment sub-region.
 " -----------------------------------------------------------------------------
-syntax match ImpComment "//.*$"
+syntax region ImpLine start="^" end="$" keepend contains=ImpComment,ImpNumber,ImpBoolean,ImpType,ImpMethod,ImpConditional,ImpLoop,ImpSpec,ImpLogic,ImpOperator
 
 " -----------------------------------------------------------------------------
-" 2. NUMBERS
-"    Basic decimal integer pattern. 
+" 2. SINGLE-LINE COMMENTS
+"    Everything from "//" to the end of the line is a comment, with
+"    contains=NONE so no tokens can match inside.
 " -----------------------------------------------------------------------------
-syntax match ImpNumber "\v\d+"
+syntax region ImpComment start="//" end="$" contains=NONE
 
 " -----------------------------------------------------------------------------
-" 3. BOOLEAN LITERALS
+" 3. NUMBERS
+"    Basic decimal integer pattern. "contained" so it only applies in ImpLine.
 " -----------------------------------------------------------------------------
-syntax keyword ImpBoolean true false
+syntax match ImpNumber "\d\+" contained
 
 " -----------------------------------------------------------------------------
-" 4. TYPES
+" 4. BOOLEAN LITERALS
+" -----------------------------------------------------------------------------
+syntax keyword ImpBoolean true false contained
+
+" -----------------------------------------------------------------------------
+" 5. TYPES
 "    Current types in Imp grammar: `int`, `bool`, and array types `int[]`, `bool[]`
 " -----------------------------------------------------------------------------
-syntax match ImpType "int\[\]\|bool\[\]"
-syntax keyword ImpType int bool
+syntax match   ImpType "int\[\]\|bool\[\]" contained
+syntax keyword ImpType int bool contained
 
 " -----------------------------------------------------------------------------
-" 5. METHODS & FUNCTION-LIKE DECLS
-"    "method" is used in Imp to define procedures. 
+" 6. METHODS & FUNCTION-LIKE DECLS
 " -----------------------------------------------------------------------------
-syntax keyword ImpMethod method
+syntax keyword ImpMethod method contained
 
 " -----------------------------------------------------------------------------
-" 6. LOOP & CONDITIONAL KEYWORDS
+" 7. LOOP & CONDITIONAL KEYWORDS
 " -----------------------------------------------------------------------------
-syntax keyword ImpLoop while
-syntax keyword ImpConditional if else
+syntax keyword ImpLoop        while contained
+syntax keyword ImpConditional if else contained
 
 " -----------------------------------------------------------------------------
-" 7. SPECIFICATION KEYWORDS
+" 8. SPECIFICATION KEYWORDS
 " -----------------------------------------------------------------------------
-syntax keyword ImpSpec requires ensures invariant returns
+syntax keyword ImpSpec requires ensures invariant returns contained
 
 " -----------------------------------------------------------------------------
-" 8. LOGIC & QUANTIFIERS
+" 9. LOGIC & QUANTIFIERS
 " -----------------------------------------------------------------------------
-syntax keyword ImpLogic forall exists
+syntax keyword ImpLogic forall exists contained
 
 " -----------------------------------------------------------------------------
-" 9. OPERATORS
+" 10. OPERATORS
+"    Define them separately to avoid regex errors in older Vim versions.
 " -----------------------------------------------------------------------------
-syntax match ImpOperator "==>"
-syntax match ImpOperator "&&\|\|\|\|\|"
-syntax match ImpOperator "[=!<>]=\|==\|<\|>\|%\|[\+\-\*/]"
+syntax match ImpOperator "==>" contained
+syntax match ImpOperator "&&\|\|\|\|\|" contained
+
+" Multi-char operators: ==, !=, <=, >=
+syntax match ImpOperator "==" contained
+syntax match ImpOperator "!=" contained
+syntax match ImpOperator "<=" contained
+syntax match ImpOperator ">=" contained
+
+" Single-char operators: <, >, %, +, -, *, /
+syntax match ImpOperator "[<>%+\-*/]" contained
 
 " -----------------------------------------------------------------------------
-" 10. LINKING TO STANDARD VIM HIGHLIGHT GROUPS
+" 11. LINKING TO STANDARD VIM HIGHLIGHT GROUPS
 " -----------------------------------------------------------------------------
 highlight link ImpComment      Comment
 highlight link ImpNumber       Number
@@ -89,11 +101,11 @@ highlight link ImpLoop         Repeat
 
 highlight link ImpSpec         Statement
 highlight link ImpLogic        Statement
-highlight link ImpKeyword      Keyword
 highlight link ImpOperator     Operator
 
 " -----------------------------------------------------------------------------
 " Mark the file type as using "imp" syntax.
 " -----------------------------------------------------------------------------
 let b:current_syntax = "imp"
+
 
